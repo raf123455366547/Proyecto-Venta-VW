@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductoController; // 1. Importamos el controlador
+use App\Http\Controllers\ProductoController; 
+use App\Models\Producto;
 
-// Esta es la ruta pasada 
 Route::get('/', function () {
-    return view('welcome');
+    $productos = Producto::all();
+    return view('welcome', compact('productos'));
 });
 
-// 2. ruta para GUARDAR los datos
+// guarda los datos
 Route::post('/guardar-producto', [ProductoController::class, 'guardar'])->name('productos.store');
+Route::get('/editar-producto/{id}', [ProductoController::class, 'editar'])->name('productos.edit');

@@ -68,68 +68,29 @@
             </div>
         @endif
 
-        <form action="{{ route('productos.store') }}" method="POST">
+        <form action="" method="POST">
             @csrf
 
             
             <div class="mb-3">
                 <label for="nombre" class="form-label font-weight-bold">Nombre del Producto</label>
-                <input type="text" name="nombre" id="nombre" class="form-control" required placeholder="Nombre del producto" value="{{ old('nombre') }}">
+                <input type="text" name="nombre" id="nombre" class="form-control" required placeholder="Nombre del producto" value="{{ old('nombre', $producto->nombre) }}">
             </div>
 
             <div class="mb-3">
                 <label for="precio" class="form-label font-weight-bold">Precio</label>
-                <input type="number" name="precio" id="precio" class="form-control" required placeholder="0000" value="{{ old('precio') }}">
+                <input type="number" name="precio" id="precio" class="form-control" required placeholder="0000" value="{{ old('precio', $producto->precio) }}">
             </div>
 
             <div class="mb-3">
                 <label for="cantidad" class="form-label font-weight-bold">Cantidad</label>
-                <input type="number" name="cantidad" id="cantidad" class="form-control" required placeholder="0000" value="{{ old('cantidad') }}">
+                <input type="number" name="cantidad" id="cantidad" class="form-control" required placeholder="0000"  value="{{ old('cantidad', $producto->cantidad) }}">
             </div>
-
+        
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-success btn-block mt-2 color_azul">Enviar </button>
             </div>
         </form>
-        </div>
-        
     </div>
-    <div class="container mt-3">
-    <div class="row">
-    <table class="table table-striped table-hover">
-    <thead>
-    <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nombre del Producto</th>
-            <th scope="col">Precio</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($productos as $producto)
-            <tr>
-                <th scope="row">{{ $producto->id }}</th>
-                <td>{{ $producto->nombre }}</td>
-                <td>${{ number_format($producto->precio, 2) }}</td>
-                <td>{{ $producto->cantidad }}</td>
-                <td>
-            <a href="{{ route('productos.edit' , $producto->id) }}" class="btn btn-primary color_azul">Editar</a>
-            </td>
-            </tr>
-        @endforeach
-
-        @if($productos->isEmpty())
-            <tr>
-                <td colspan="4" class="text-center text-muted">
-                    No hay productos registrados en la base de datos.
-                </td>
-            </tr>
-        @endif
-    </tbody>
-    </table>
-    </div>
-    </div>
-
 </body>
 </html>

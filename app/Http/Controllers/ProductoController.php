@@ -19,4 +19,14 @@ class ProductoController extends Controller
 
         return redirect()->back();
     }
+    public function editar ($id) {
+
+        $producto=Producto::find($id);
+
+    //var_dump($producto);
+
+
+       return  view('update_productos', compact('producto'));
+    }
+
 }
