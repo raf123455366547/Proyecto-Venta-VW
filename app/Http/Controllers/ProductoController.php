@@ -29,4 +29,23 @@ class ProductoController extends Controller
        return  view('update_productos', compact('producto'));
     }
 
+   public function update(Request $request, $id)
+    {
+    
+    $producto = Producto::findOrFail($id);
+    $producto->update($request->all());
+
+    return redirect('/');
+
+    }
+
+       public function destroy($id)
+
+    {
+       $producto = Producto::findOrFail($id);
+        $producto->delete();
+        return redirect('/');
+
+    }
+
 }

@@ -12,3 +12,5 @@ Route::get('/', function () {
 // guarda los datos
 Route::post('/guardar-producto', [ProductoController::class, 'guardar'])->name('productos.store');
 Route::get('/editar-producto/{id}', [ProductoController::class, 'editar'])->name('productos.edit');
+Route::post('/actualizar-producto/{id}', [ProductoController::class, 'update'])->name('productos.update');
+Route::delete('/eliminar-producto/{id}', [ProductoController::class, 'destroy'])->name('productos.delete');

@@ -68,9 +68,7 @@
             </div>
         @endif
 
-        <form action="" method="POST">
-            @csrf
-
+            <form action="{{ route('productos.update', $producto->id) }}" method="POST">            
             
             <div class="mb-3">
                 <label for="nombre" class="form-label font-weight-bold">Nombre del Producto</label>

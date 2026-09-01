@@ -111,10 +111,15 @@
             <tr>
                 <th scope="row">{{ $producto->id }}</th>
                 <td>{{ $producto->nombre }}</td>
-                <td>${{ number_format($producto->precio, 2) }}</td>
+                <td>${{ number_format($producto->precio) }}</td>
                 <td>{{ $producto->cantidad }}</td>
                 <td>
             <a href="{{ route('productos.edit' , $producto->id) }}" class="btn btn-primary color_azul">Editar</a>
+            <form action="{{ route('productos.delete', $producto->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            @csrf
+            @method('DELETE')
+            </form>
             </td>
             </tr>
         @endforeach
