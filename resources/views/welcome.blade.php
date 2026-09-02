@@ -12,7 +12,10 @@
 
         }
         .color_azul {
-        background: #133a60 !important;    
+        background: #133a60 !important;
+                }
+        .color_white {
+        background: #fcfdff !important;      
         }
     </Style>
 </head>
@@ -31,33 +34,29 @@
                     <a href="#" class="nav-link px-2 text-secondary">Home</a>
                     </li> 
                     <li>
-                    <a href="#" class="nav-link px-2 text-white">Features</a>
                     </li> 
-                    <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li> 
-                    <!-- <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>  -->
+                    <li><a href="{{route('productos.index')}}" class="nav-link px-2 text-white">Productos</a></li>
                     <li><a href="#" class="nav-link px-2 text-white">About</a></li> 
                     </ul> <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"> 
-                    <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" style="background: #133a60 !important;"> 
+                    <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" style="background: #ffffff !important;"> 
                     </form>
-                    <div class="text-end"> 
-                    <button type="button" class="btn btn-outline-light me-2 ">Login</button> 
-                    <button type="button" class="btn btn-warning color_azul">Sign-up</button> 
-                </div> 
-            </div> 
-        </div> 
-    </header> 
-    
-<h2 class="text-center mt-5 mb-4 font-weight-bold" style="color: #133a60;">Nombre del Producto</h2>
-<div class="container">
 
-        <!-- Mensaje de éxito al guardar en la Base de Datos -->
+                    <div class="text-end"> 
+                    <a href="{{ route('login.index') }}" class="btn btn-outline-light me-2 text-black color_white text-decoration-none">Login</a> 
+                    <button type="button" class="btn btn-outline-light me-2 text-black color_white ">Sign-up</button> 
+                    </div>
+                    </div> 
+                    </header> 
+
+        <h2 class="text-center mt-5 mb-4 font-weight-bold" style="color: #133a60;">Nombre del Producto</h2>
+        <div class="container">
+
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Alerta en caso de errores de validación -->
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">

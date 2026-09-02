@@ -7,6 +7,7 @@ use App\Models\Producto;
 
 class ProductoController extends Controller
 {
+    
     public function guardar(Request $request)
     {
         $nuevoProducto = new Producto();
