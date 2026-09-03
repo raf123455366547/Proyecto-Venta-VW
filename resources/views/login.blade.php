@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario - Compra y Venta</title>
-    <!-- Usamos Bootstrap mediante CDN para dar diseño rápido y limpio a los inputs -->
+    
+    <link rel="icon" type="image/png" href="{{ asset('asests/logo_ancgvw.ico.png') }}">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        #principal {
-
-        }
         .color_azul {
-            background: #133a60 !important;
+            background: #133a60 !important;   
         }
         .color_white {
             background: #fcfdff !important;      
@@ -21,41 +20,41 @@
 </head>
 
 <body> 
+
 <header id="principal" class="p-3 text-bg-dark color_azul"> 
     <div class="container"> 
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"> 
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"> 
-                <img src="{{ asset('asests/logo.ancgvw.png') }}" alt="Logo Inventario" width="40" height="40" class="me-2">    
+                <!-- Logo del Header -->
+                <img src="{{ asset('asests/logo.ancgvw.png') }}" alt="Logo Inventario" width="40" height="40" class="me-2 object-fit-contain">        
                 <span class="fs-4 text-white font-weight-bold">ANCGVW</span>
             </a>
+            
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"> 
-                <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li> 
-                <li></li> 
+                <li><a href="/" class="nav-link px-2 text-white">Home</a></li> 
                 <li><a href="{{ route('productos.index') }}" class="nav-link px-2 text-white">Productos</a></li>
                 <li><a href="#" class="nav-link px-2 text-white">About</a></li> 
             </ul> 
+            
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"> 
                 <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" style="background: #ffffff !important;"> 
             </form>
+
             <div class="text-end"> 
-                <button type="button" class="btn btn-outline-light me-2 text-black color_white">Login</button> 
+                <a href="{{ route('login.post') }}" class="btn btn-outline-light me-2 text-black color_white text-decoration-none">Login</a> 
                 <button type="button" class="btn btn-outline-light me-2 text-black color_white">Sign-up</button> 
-            </div> 
+            </div>
         </div> 
     </div> 
-</header> 
-    
-<h2 class="text-center mt-5 mb-4 font-weight-bold" style="color: #133a60;">Iniciar Sesión</h2>
+</header>
 
-<div class="container">
+<div class="text-center mt-5 mb-4">
+    <!-- Logo central de la vista de Iniciar Sesión -->
+    <img src="{{ asset('asests/logo.ancgvw.png') }}" alt="Logo ANCGVW" class="img-fluid mb-2" style="max-height: 70px;">
+    <h2 class="font-weight-bold" style="color: #133a60;">Iniciar Sesión</h2>
+</div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
+<div class="container" style="max-width: 500px;">
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">

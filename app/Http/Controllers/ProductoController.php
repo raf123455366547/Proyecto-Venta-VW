@@ -36,8 +36,7 @@ class ProductoController extends Controller
     $producto = Producto::findOrFail($id);
     $producto->update($request->all());
 
-    return redirect('/');
-
+    return redirect()->back();
     }
 
        public function destroy($id)

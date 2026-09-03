@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario - Compra y Venta</title>
-    <!-- Usamos Bootstrap mediante CDN para dar diseño rápido y limpio a los inputs -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <Style>
@@ -113,7 +112,17 @@
                 <td>${{ number_format($producto->precio) }}</td>
                 <td>{{ $producto->cantidad }}</td>
                 <td>
-            <a href="{{ route('productos.edit' , $producto->id) }}" class="btn btn-primary color_azul">Editar</a>
+                <button type="button" 
+                class="btn btn-primary color_azul" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modalEditar"
+                data-id="{{ $producto->id }}"
+                data-nombre="{{ $producto->nombre }}"
+                data-precio="{{ $producto->precio }}"
+                data-cantidad="{{ $producto->cantidad }}"
+                onclick="cargarDatos(this)">
+                Editar
+            </button>
             <form action="{{ route('productos.delete', $producto->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
             <button type="submit" class="btn btn-danger">Eliminar</button>
             @csrf
@@ -134,6 +143,58 @@
     </table>
     </div>
     </div>
+        <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+      
+        <form id="formEditar" method="POST">
+        @csrf
+        @method('PUT')
 
-</body>
+        <div class="modal-header color_azul text-white">
+          <h5 class="modal-title">Editar Producto</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label font-weight-bold">Nombre del Producto</label>
+            <input type="text" name="nombre" id="edit_nombre" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label font-weight-bold">Precio</label>
+            <input type="number" step="0.01" name="precio" id="edit_precio" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label font-weight-bold">Cantidad</label>
+            <input type="number" name="cantidad" id="edit_cantidad" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn color_azul text-white">Guardar Cambios</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+    </div>
+        <script>
+        function cargarDatos(button) {
+        let id = button.getAttribute('data-id');
+        let nombre = button.getAttribute('data-nombre');
+        let precio = button.getAttribute('data-precio');
+        let cantidad = button.getAttribute('data-cantidad');
+
+        document.getElementById('edit_nombre').value = nombre;
+        document.getElementById('edit_precio').value = precio;
+        document.getElementById('edit_cantidad').value = cantidad;
+
+        document.getElementById('formEditar').action = '/producto/update/' + id;
+}
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>

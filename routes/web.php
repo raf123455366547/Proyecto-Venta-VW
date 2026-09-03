@@ -5,8 +5,6 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\LoginController; 
 use App\Models\Producto;
 
-//Rutas 
-
 Route::get('/producto', function () {
     $productos = Producto::all();
     return view('welcome', compact('productos'));
@@ -18,3 +16,4 @@ Route::post('/guardar-producto', [ProductoController::class, 'guardar'])->name('
 Route::get('/editar-producto/{id}', [ProductoController::class, 'editar'])->name('productos.edit');
 Route::post('/actualizar-producto/{id}', [ProductoController::class, 'update'])->name('productos.update');
 Route::delete('/eliminar-producto/{id}', [ProductoController::class, 'destroy'])->name('productos.delete');
+Route::put('/producto/update/{id}', [ProductoController::class, 'update'])->name('productos.update');
