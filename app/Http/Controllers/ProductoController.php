@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Producto;
 
 class ProductoController extends Controller
 {
-    
+    public function index()
+    {
+    return view('productos');
+    }
+
     public function guardar(Request $request)
     {
         $nuevoProducto = new Producto();
@@ -20,32 +23,32 @@ class ProductoController extends Controller
 
         return redirect()->back();
     }
-    public function editar ($id) {
 
-        $producto=Producto::find($id);
-
-    //var_dump($producto);
-
-
-       return  view('update_productos', compact('producto'));
+    public function editar($id) 
+    {
+        $producto = Producto::find($id);
+        return view('update_productos', compact('producto'));
     }
 
-   public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
-    
-    $producto = Producto::findOrFail($id);
-    $producto->update($request->all());
+        $producto = Producto::findOrFail($id);
+        $producto->update($request->all());
 
-    return redirect()->back();
+        return redirect()->back();
     }
 
-       public function destroy($id)
-
+    public function destroy($id)
     {
-       $producto = Producto::findOrFail($id);
+        $producto = Producto::findOrFail($id);
         $producto->delete();
-        return redirect('/');
-
+        
+        return redirect()->back(); 
     }
+     public function inventario() {
 
+    $productos = Producto::all();
+    return view('inventario', compact('productos'));
+     }
+     
 }
