@@ -27,14 +27,15 @@ class LoginController extends Controller
             $user = User::create([
                 'name' => 'Usuario Nuevo',
                 'email' => $request->correo,
-                'password' => $request->password,
+                'password' => Hash::make($request->password),
             ]);
         }
 
-        if ($user->password === $request->password || Hash::check($request->password, $user->password)) {
+        if (Hash::check($request->password, $user->password)) {
             Auth::login($user);
             $request->session()->regenerate();
-            return redirect()->intended('/producto');
+            
+            return redirect()->route('productos.index');
         }
 
         return back()->with('error', 'La contraseña no coincide para este correo.');

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Producto;
 
@@ -8,47 +9,38 @@ class ProductoController extends Controller
 {
     public function index()
     {
-    return view('productos');
+        return view('productos');
     }
 
-    public function guardar(Request $request)
+    public function inventario()
     {
-        $nuevoProducto = new Producto();
-
-        $nuevoProducto->nombre = $request->nombre;
-        $nuevoProducto->precio = $request->precio;
-        $nuevoProducto->cantidad = $request->cantidad;
-
-        $nuevoProducto->save();
-
-        return redirect()->back();
+        $productos = Producto::all();
+        return view('inventario', compact('productos'));
     }
 
-    public function editar($id) 
+    public function store(Request $request)
     {
-        $producto = Producto::find($id);
-        return view('update_productos', compact('producto'));
+        Producto::create($request->all());
+        return back()->with('success', 'Producto guardado correctamente.');
+    }
+
+    public function edit($id)
+    {
+        $producto = Producto::findOrFail($id);
+        return view('editar_producto', compact('producto'));
     }
 
     public function update(Request $request, $id)
     {
         $producto = Producto::findOrFail($id);
         $producto->update($request->all());
-
-        return redirect()->back();
+        return back()->with('success', 'Producto actualizado correctamente.');
     }
 
     public function destroy($id)
     {
         $producto = Producto::findOrFail($id);
         $producto->delete();
-        
-        return redirect()->back(); 
+        return back()->with('success', 'Producto eliminado correctamente.');
     }
-     public function inventario() {
-
-    $productos = Producto::all();
-    return view('inventario', compact('productos'));
-     }
-     
 }
