@@ -18,7 +18,6 @@
     </style>
 </head>
 <body>
-
     <header id="principal" class="p-3 text-bg-dark color_azul"> 
         <div class="container"> 
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"> 
@@ -27,12 +26,13 @@
                     <span class="fs-4 text-white font-weight-bold">ANCGVW</span>
                 </a>
                 
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"> 
+                <ul class="nav col-12 col-lg-auto mx-lg-auto mb-2 justify-content-center mb-md-0"> 
                     @auth
-                        <li><a href="{{ route('productos.index') }}" class="nav-link px-2 text-white">Productos</a></li>
-                        <li><a href="{{ route('inventario.index') }}" class="nav-link px-2 text-white">Inventario</a></li>
+                    <li><a href="{{ route('productos.index') }}" class="nav-link px-3 text-white">Productos</a></li>
+                    <li><a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">Inventario</a></li>
+                    <li><a href="{{ route('usuarios.index') }}" class="nav-link px-3 text-white">Usuarios</a></li>
                     @endauth
-                </ul> 
+                </ul>
                 
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"> 
                     <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" style="background: #ffffff !important;"> 

@@ -69,7 +69,7 @@
     </table>
 </div>
 
-{{-- Modal Crear --}}
+
 <div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -102,7 +102,7 @@
     </div>
 </div>
 
-{{-- Modal Editar --}}
+
 <div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -136,7 +136,6 @@
     </div>
 </div>
 
-{{-- Modal Eliminar --}}
 <div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
