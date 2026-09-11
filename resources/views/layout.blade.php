@@ -16,8 +16,17 @@
         .color_white {
             background: #fcfdff !important;
         }
+
+        html {
+        scroll-behavior: smooth;
+        }
+
+    body{
+        overflow-y: scroll;
+        will-change: transform;
+        }
     </style>
-</head>
+    </head>
 
 <body>
 
@@ -31,33 +40,43 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto mx-lg-auto mb-2 justify-content-center mb-md-0">
-
                 @auth
-
+                    {{-- Pestaña Productos (Disponible para Admin e Inventario) --}}
+                    @if(in_array(strtolower(Auth::user()->role?->nombre ?? ''), ['admin', 'inventario']))
                     <li>
                         <a href="{{ route('productos.index') }}" class="nav-link px-3 text-white">
                             Productos
                         </a>
                     </li>
-
-                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'inventario')
-                        <li>
-                            <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">
-                                Inventario
-                            </a>
-                        </li>
                     @endif
 
-                    @if(Auth::user()->role === 'admin')
-                        <li>
-                            <a href="{{ route('usuarios.index') }}" class="nav-link px-3 text-white">
-                                Usuarios
-                            </a>
-                        </li>
+                    {{-- Pestaña Inventario (Disponible para Admin e Inventario) --}}
+                    @if(in_array(strtolower(Auth::user()->role?->nombre ?? ''), ['admin', 'inventario']))
+                    <li>
+                        <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">
+                            Inventario
+                        </a>
+                    </li>
                     @endif
 
+                    {{-- Pestaña Ventas (Disponible para Admin y Ventas) --}}
+                    @if(in_array(strtolower(Auth::user()->role?->nombre ?? ''), ['admin', 'ventas']))
+                    <li>
+                        <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white">
+                            Ventas
+                        </a>
+                    </li>
+                    @endif
+
+                    {{-- Pestaña Usuarios (Exclusivo para Admin) --}}
+                    @if(strtolower(Auth::user()->role?->nombre ?? '') === 'admin')
+                    <li>
+                        <a href="{{ route('usuarios.index') }}" class="nav-link px-3 text-white">
+                            Usuarios
+                        </a>
+                    </li>
+                    @endif
                 @endauth
-
             </ul>
 
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">

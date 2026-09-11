@@ -13,7 +13,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0" style="color: #133a60;">Gestión de Usuarios</h2>
         
-        <button type="button" class="btn text-white color_azul" style="margin-right: 17%;" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
+        <button type="button" class="btn text-white color_azul" style="margin-right: 12%;" data-bs-toggle="modal" data-bs-target="#modalCrearUsuario">
             + Agregar Usuario
         </button>
     </div>
@@ -41,14 +41,14 @@
                 <td><strong>{{ $usuario->id }}</strong></td>
                 <td>{{ $usuario->name }}</td>
                 <td>{{ $usuario->email }}</td>
-                <td><span class="badge bg-secondary text-uppercase">{{ $usuario->role ?? 'ventas' }}</span></td>
+                <td><span class="badge bg-secondary text-uppercase">{{ $usuario->role?->nombre ?? 'ventas' }}</span></td>
                 <td>
                     <button class="btn text-white btn-sm color_azul" 
                             onclick="cargarDatosUsuario(this)" 
                             data-id="{{ $usuario->id }}"
                             data-name="{{ $usuario->name }}"
                             data-email="{{ $usuario->email }}"
-                            data-role="{{ $usuario->role ?? 'ventas' }}"
+                            data-role="{{ $usuario->role_id }}"
                             data-bs-toggle="modal" 
                             data-bs-target="#modalEditarUsuario">
                         Editar
@@ -70,7 +70,7 @@
     </table>
 </div>
 
-<div class="modal fade" id="modalCrearUsuario" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalCrearUsuario" style="px-40%" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-white color_azul">
@@ -90,10 +90,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rol de Usuario</label>
-                        <select name="role" class="form-select" required>
-                            <option value="ventas" selected>Ventas</option>
-                            <option value="inventario">Inventario</option>
-                            <option value="admin">Administrador</option>
+                        <select name="role_id" class="form-select" required>
+                            <option value="2" selected>Ventas</option>
+                            <option value="3">Inventario</option>
+                            <option value="1">Administrador</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -131,10 +131,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rol de Usuario</label>
-                        <select id="edit_role" name="role" class="form-select" required>
-                            <option value="ventas">Ventas</option>
-                            <option value="inventario">Inventario</option>
-                            <option value="admin">Administrador</option>
+                        <select id="edit_role" name="role_id" class="form-select" required>
+                            <option value="2">Ventas</option>
+                            <option value="3">Inventario</option>
+                            <option value="1">Administrador</option>
                         </select>
                     </div>
                     <div class="mb-3">
