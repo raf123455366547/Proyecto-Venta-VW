@@ -15,9 +15,10 @@ class CheckRole
             return redirect()->route('login.index')->with('error', 'Debes iniciar sesión para acceder.');
         }
 
-        $userRole = Auth::user()->role?->nombre;
+        // Verifica si el usuario posee al menos uno de los roles permitidos en la ruta
+        $hasRole = Auth::user()->roles()->whereIn('nombre', $roles)->exists();
 
-        if (!$userRole || !in_array($userRole, $roles)) {
+        if (!$hasRole) {
             return redirect()->route('login.index')->with('error', 'No tienes permisos para acceder a este módulo.');
         }
 

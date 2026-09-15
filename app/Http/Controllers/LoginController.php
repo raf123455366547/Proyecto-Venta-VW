@@ -35,19 +35,19 @@ class LoginController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
 
-            // Obtenemos el nombre del rol en minúsculas
-            $userRole = strtolower($user->role?->nombre ?? '');
+            // Obtenemos todos los nombres de roles del usuario en minúsculas
+            $userRoles = $user->roles->pluck('nombre')->map(fn($r) => strtolower($r))->toArray();
 
-            // Redirección inteligente basada en el rol del usuario
-            if ($userRole === 'admin') {
+            // Redirección inteligente basada en los roles del usuario
+            if (in_array('admin', $userRoles)) {
                 return redirect()->route('usuarios.index');
-            } elseif ($userRole === 'inventario') {
+            } elseif (in_array('inventario', $userRoles)) {
                 return redirect()->route('inventario.index');
-            } elseif ($userRole === 'ventas') {
+            } elseif (in_array('ventas', $userRoles)) {
                 return redirect()->route('ventas.index');
             }
 
-            // Si el usuario no tiene rol asignado o es un rol nuevo
+            // Si el usuario no tiene ningún rol asignado en la tabla pivote
             return redirect()->route('login.index')->with('error', 'Tu usuario no tiene un rol válido asignado.');
         }
 

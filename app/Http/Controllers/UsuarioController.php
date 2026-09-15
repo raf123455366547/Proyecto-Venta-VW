@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -11,20 +12,22 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        if (strtolower(Auth::user()->role?->nombre ?? '') !== 'admin') {
+        if (!Auth::user()->roles()->where('nombre', 'admin')->exists()) {
             return redirect()->back();
         }
 
-        $usuarios = User::with('role')
+        $usuarios = User::with('roles')
             ->where('id', '!=', 1)
             ->get();
 
-        return view('users', compact('usuarios'));
+        $roles = Role::all();
+
+        return view('users', compact('usuarios', 'roles'));
     }
 
     public function store(Request $request)
     {
-        if (strtolower(Auth::user()->role?->nombre ?? '') !== 'admin') {
+        if (!Auth::user()->roles()->where('nombre', 'admin')->exists()) {
             return redirect()->back();
         }
 
@@ -36,22 +39,24 @@ class UsuarioController extends Controller
                 Rule::unique('users', 'email')->whereNull('deleted_at'),
             ],
             'password' => 'required|min:6',
-            'role_id' => 'required|exists:roles,id',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id',
         ]);
 
-        User::create([
+        $usuario = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'role_id' => $request->role_id,
         ]);
+
+        $usuario->roles()->attach($request->roles);
 
         return redirect()->back()->with('success', 'Usuario creado correctamente.');
     }
 
     public function update(Request $request, $id)
     {
-        if (strtolower(Auth::user()->role?->nombre ?? '') !== 'admin') {
+        if (!Auth::user()->roles()->where('nombre', 'admin')->exists()) {
             return redirect()->back();
         }
 
@@ -64,12 +69,12 @@ class UsuarioController extends Controller
                 'email',
                 Rule::unique('users', 'email')->ignore($id)->whereNull('deleted_at'),
             ],
-            'role_id' => 'required|exists:roles,id',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id',
         ]);
 
         $usuario->name = $request->name;
         $usuario->email = $request->email;
-        $usuario->role_id = $request->role_id;
 
         if ($request->filled('password')) {
             $usuario->password = $request->password;
@@ -77,12 +82,14 @@ class UsuarioController extends Controller
 
         $usuario->save();
 
+        $usuario->roles()->sync($request->roles);
+
         return redirect()->back()->with('success', 'Usuario actualizado correctamente.');
     }
 
     public function destroy($id)
     {
-        if (strtolower(Auth::user()->role?->nombre ?? '') !== 'admin') {
+        if (!Auth::user()->roles()->where('nombre', 'admin')->exists()) {
             return redirect()->back();
         }
 

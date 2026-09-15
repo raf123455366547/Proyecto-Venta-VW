@@ -31,7 +31,7 @@
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Correo Electrónico</th>
-                <th>Rol</th>
+                <th>Roles</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -41,14 +41,18 @@
                 <td><strong>{{ $usuario->id }}</strong></td>
                 <td>{{ $usuario->name }}</td>
                 <td>{{ $usuario->email }}</td>
-                <td><span class="badge bg-secondary text-uppercase">{{ $usuario->role?->nombre ?? 'ventas' }}</span></td>
+                <td>
+                    @foreach($usuario->roles as $rol)
+                        <span class="badge bg-secondary text-uppercase me-1">{{ $rol->nombre }}</span>
+                    @endforeach
+                </td>
                 <td>
                     <button class="btn text-white btn-sm color_azul" 
                             onclick="cargarDatosUsuario(this)" 
                             data-id="{{ $usuario->id }}"
                             data-name="{{ $usuario->name }}"
                             data-email="{{ $usuario->email }}"
-                            data-role="{{ $usuario->role_id }}"
+                            data-roles="{{ $usuario->roles->pluck('id')->join(',') }}"
                             data-bs-toggle="modal" 
                             data-bs-target="#modalEditarUsuario">
                         Editar
@@ -71,7 +75,7 @@
 </div>
 
 <div class="modal fade" id="modalCrearUsuario" style="px-40%" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header text-white color_azul">
                 <h5 class="modal-title">Agregar Nuevo Usuario</h5>
@@ -89,12 +93,17 @@
                         <input type="email" name="email" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Rol de Usuario</label>
-                        <select name="role_id" class="form-select" required>
-                            <option value="2" selected>Ventas</option>
-                            <option value="3">Inventario</option>
-                            <option value="1">Administrador</option>
-                        </select>
+                        <label class="form-label d-block">Roles de Usuario</label>
+                        <div class="border rounded p-2">
+                            @foreach($roles as $rol)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="roles[]" value="{{ $rol->id }}" id="crear_rol_{{ $rol->id }}">
+                                    <label class="form-check-label text-capitalize" for="crear_rol_{{ $rol->id }}">
+                                        {{ $rol->nombre }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Contraseña</label>
@@ -111,7 +120,7 @@
 </div>
 
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header text-white color_azul">
                 <h5 class="modal-title">Editar Usuario</h5>
@@ -130,12 +139,17 @@
                         <input type="email" id="edit_email" name="email" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Rol de Usuario</label>
-                        <select id="edit_role" name="role_id" class="form-select" required>
-                            <option value="2">Ventas</option>
-                            <option value="3">Inventario</option>
-                            <option value="1">Administrador</option>
-                        </select>
+                        <label class="form-label d-block">Roles de Usuario</label>
+                        <div class="border rounded p-2">
+                            @foreach($roles as $rol)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input edit-role-checkbox" type="checkbox" name="roles[]" value="{{ $rol->id }}" id="edit_rol_{{ $rol->id }}">
+                                    <label class="form-check-label text-capitalize" for="edit_rol_{{ $rol->id }}">
+                                        {{ $rol->nombre }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Contraseña</label>
@@ -183,11 +197,17 @@
             let id = button.getAttribute('data-id');
             let name = button.getAttribute('data-name');
             let email = button.getAttribute('data-email');
-            let role = button.getAttribute('data-role');
+            let rolesAttr = button.getAttribute('data-roles');
 
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_email').value = email;
-            document.getElementById('edit_role').value = role;
+            
+            let rolesArray = rolesAttr ? rolesAttr.split(',') : [];
+
+            document.querySelectorAll('.edit-role-checkbox').forEach(checkbox => {
+                checkbox.checked = rolesArray.includes(checkbox.value);
+            });
+
             document.getElementById('formEditarUsuario').action = `/usuarios/update/${id}`;
         }
 

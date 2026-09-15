@@ -10,12 +10,22 @@ use Illuminate\Support\Facades\DB;
 
 class VentaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ventas = Venta::with(['producto', 'usuario'])->latest()->get();
+        $buscar = $request->get('buscar');
+
+        $ventas = Venta::with(['producto', 'usuario'])
+            ->when($buscar, function ($query, $buscar) {
+                return $query->whereHas('producto', function ($q) use ($buscar) {
+                    $q->where('nombre', 'like', "%{$buscar}%");
+                });
+            })
+            ->latest()
+            ->get();
+
         $productos = Producto::where('cantidad', '>', 0)->get();
 
-        return view('ventas', compact('ventas', 'productos'));
+        return view('ventas', compact('ventas', 'productos', 'buscar'));
     }
 
     public function store(Request $request)

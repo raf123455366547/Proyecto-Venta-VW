@@ -41,8 +41,12 @@
 
             <ul class="nav col-12 col-lg-auto mx-lg-auto mb-2 justify-content-center mb-md-0">
                 @auth
+                    @php
+                        $userRoles = Auth::user()->roles->pluck('nombre')->map(fn($r) => strtolower($r))->toArray();
+                    @endphp
+
                     {{-- Pestaña Productos (Disponible para Admin e Inventario) --}}
-                    @if(in_array(strtolower(Auth::user()->role?->nombre ?? ''), ['admin', 'inventario']))
+                    @if(array_intersect(['admin', 'inventario'], $userRoles))
                     <li>
                         <a href="{{ route('productos.index') }}" class="nav-link px-3 text-white">
                             Productos
@@ -51,7 +55,7 @@
                     @endif
 
                     {{-- Pestaña Inventario (Disponible para Admin e Inventario) --}}
-                    @if(in_array(strtolower(Auth::user()->role?->nombre ?? ''), ['admin', 'inventario']))
+                    @if(array_intersect(['admin', 'inventario'], $userRoles))
                     <li>
                         <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">
                             Inventario
@@ -60,7 +64,7 @@
                     @endif
 
                     {{-- Pestaña Ventas (Disponible para Admin y Ventas) --}}
-                    @if(in_array(strtolower(Auth::user()->role?->nombre ?? ''), ['admin', 'ventas']))
+                    @if(array_intersect(['admin', 'ventas'], $userRoles))
                     <li>
                         <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white">
                             Ventas
@@ -69,7 +73,7 @@
                     @endif
 
                     {{-- Pestaña Usuarios (Exclusivo para Admin) --}}
-                    @if(strtolower(Auth::user()->role?->nombre ?? '') === 'admin')
+                    @if(in_array('admin', $userRoles))
                     <li>
                         <a href="{{ route('usuarios.index') }}" class="nav-link px-3 text-white">
                             Usuarios

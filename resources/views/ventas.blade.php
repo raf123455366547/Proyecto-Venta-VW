@@ -10,6 +10,17 @@
         </button>
     </div>
 
+    {{-- Buscador de Ventas por Producto --}}
+    <form action="{{ route('ventas.index') }}" method="GET" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre de producto..." value="{{ request('buscar') }}">
+            <button class="btn text-white" type="submit" style="background-color: #133a60;">Buscar</button>
+            @if(request('buscar'))
+                <a href="{{ route('ventas.index') }}" class="btn btn-secondary">Limpiar</a>
+            @endif
+        </div>
+    </form>
+
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -52,7 +63,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No hay ventas registradas en el sistema.</td>
+                                <td colspan="7" class="text-center text-muted py-4">No se encontraron ventas registradas.</td>
                             </tr>
                         @endforelse
                     </tbody>
