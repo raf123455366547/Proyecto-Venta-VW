@@ -56,4 +56,20 @@ class VentaController extends Controller
             return redirect()->back()->with('success', 'Venta registrada con éxito y stock actualizado.');
         });
     }
+
+    public function destroy($id)
+    {
+        return DB::transaction(function () use ($id) {
+            $venta = Venta::findOrFail($id);
+
+            if ($venta->producto) {
+                $venta->producto->cantidad += $venta->cantidad;
+                $venta->producto->save();
+            }
+
+            $venta->delete();
+
+            return redirect()->back()->with('success', 'Venta eliminada con éxito y el stock ha sido devuelto.');
+        });
+    }
 }

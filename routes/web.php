@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,ventas'])->group(function () {
         Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index');
         Route::post('/ventas/store', [VentaController::class, 'store'])->name('ventas.store');
+        Route::delete('/ventas/destroy/{id}', [VentaController::class, 'destroy'])->name('ventas.destroy');
     });
 
 });

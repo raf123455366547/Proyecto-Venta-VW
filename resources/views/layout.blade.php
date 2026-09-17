@@ -45,7 +45,6 @@
                         $userRoles = Auth::user()->roles->pluck('nombre')->map(fn($r) => strtolower($r))->toArray();
                     @endphp
 
-                    {{-- Pestaña Productos (Disponible para Admin e Inventario) --}}
                     @if(array_intersect(['admin', 'inventario'], $userRoles))
                     <li>
                         <a href="{{ route('productos.index') }}" class="nav-link px-3 text-white">
@@ -53,8 +52,6 @@
                         </a>
                     </li>
                     @endif
-
-                    {{-- Pestaña Inventario (Disponible para Admin e Inventario) --}}
                     @if(array_intersect(['admin', 'inventario'], $userRoles))
                     <li>
                         <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">

@@ -48,6 +48,7 @@
                             <th>Precio Unitario</th>
                             <th>Total</th>
                             <th>Fecha</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,10 +61,38 @@
                                 <td>${{ number_format($venta->precio_unitario, 2) }}</td>
                                 <td class="fw-bold text-success">${{ number_format($venta->total, 2) }}</td>
                                 <td>{{ $venta->created_at->format('d/m/Y H:i') }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminarVenta{{ $venta->id }}">
+                                        Eliminar
+                                    </button>
+
+                                    <!-- Modal Eliminar Venta -->
+                                    <div class="modal fade" id="modalEliminarVenta{{ $venta->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-white bg-danger">
+                                                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-start">
+                                                    ¿Estás seguro de que deseas eliminar esta venta del producto <strong>{{ $venta->producto?->nombre }}</strong>? Esta acción devolverá <strong>{{ $venta->cantidad }}</strong> unidades al stock.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <form action="{{ route('ventas.destroy', $venta->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Eliminar Venta</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No se encontraron ventas registradas.</td>
+                                <td colspan="8" class="text-center text-muted py-4">No se encontraron ventas registradas.</td>
                             </tr>
                         @endforelse
                     </tbody>
