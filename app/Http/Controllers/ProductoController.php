@@ -7,14 +7,25 @@ use App\Models\Producto;
 
 class ProductoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('productos');
+        $buscar = $request->get('buscar');
+
+        $productos = Producto::when($buscar, function ($query, $buscar) {
+            return $query->where('nombre', 'LIKE', "%{$buscar}%");
+        })->get();
+
+        return view('productos', compact('productos'));
     }
 
-    public function inventario()
+    public function inventario(Request $request)
     {
-        $productos = Producto::all();
+        $buscar = $request->get('buscar');
+
+        $productos = Producto::when($buscar, function ($query, $buscar) {
+            return $query->where('nombre', 'LIKE', "%{$buscar}%");
+        })->get();
+
         return view('inventario', compact('productos'));
     }
 
@@ -27,7 +38,7 @@ class ProductoController extends Controller
     public function edit($id)
     {
         $producto = Producto::findOrFail($id);
-        return view('editar_producto', compact('producto'));
+        return back(); // Al usar modales, regresamos a la vista actual
     }
 
     public function update(Request $request, $id)

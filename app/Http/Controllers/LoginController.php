@@ -39,9 +39,11 @@ class LoginController extends Controller
 
             if (in_array('admin', $userRoles)) {
                 return redirect()->route('usuarios.index');
-            } elseif (in_array('inventario', $userRoles)) {
+            
+            } elseif (in_array('inventario', $userRoles) || in_array('inventario_ayudante', $userRoles)) {
                 return redirect()->route('inventario.index');
-            } elseif (in_array('ventas', $userRoles)) {
+            
+            } elseif (in_array('ventas', $userRoles) || in_array('ventas_ayudante', $userRoles)) {
                 return redirect()->route('ventas.index');
             }
 
