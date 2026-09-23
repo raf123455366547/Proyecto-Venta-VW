@@ -18,15 +18,15 @@
         }
 
         html {
-        scroll-behavior: smooth;
+            scroll-behavior: smooth;
         }
 
-    body{
-        overflow-y: scroll;
-        will-change: transform;
+        body{
+            overflow-y: scroll;
+            will-change: transform;
         }
     </style>
-    </head>
+</head>
 
 <body>
 
@@ -42,17 +42,20 @@
             <ul class="nav col-12 col-lg-auto mx-lg-auto mb-2 justify-content-center mb-md-0">
                 @auth
                     @php
-                        $userRoles = Auth::user()->roles->pluck('nombre')->map(fn($r) => strtolower($r))->toArray();
+                        $userRoles = Auth::user()->roles->pluck('nombre')->map(fn($r) => trim(strtolower($r)))->toArray();
                     @endphp
 
-                    @if(array_intersect(['admin', 'inventario'], $userRoles))
+                    {{-- Pestaña Productos (Disponible para Admin, Inventario e Inventario Ayudante) --}}
+                    @if(array_intersect(['admin', 'inventario', 'inventario_ayudante', 'inventario ayudante'], $userRoles))
                     <li>
                         <a href="{{ route('productos.index') }}" class="nav-link px-3 text-white">
                             Productos
                         </a>
                     </li>
                     @endif
-                    @if(array_intersect(['admin', 'inventario'], $userRoles))
+
+                    {{-- Pestaña Inventario (Disponible para Admin, Inventario e Inventario Ayudante) --}}
+                    @if(array_intersect(['admin', 'inventario', 'inventario_ayudante', 'inventario ayudante'], $userRoles))
                     <li>
                         <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">
                             Inventario
@@ -60,8 +63,8 @@
                     </li>
                     @endif
 
-                    {{-- Pestaña Ventas (Disponible para Admin y Ventas) --}}
-                    @if(array_intersect(['admin', 'ventas'], $userRoles))
+                    {{-- Pestaña Ventas (Disponible para Admin, Ventas y Ventas Ayudante) --}}
+                    @if(array_intersect(['admin', 'ventas', 'ventas_ayudante', 'ventas ayudante'], $userRoles))
                     <li>
                         <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white">
                             Ventas
