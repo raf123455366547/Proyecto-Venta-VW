@@ -2,14 +2,33 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductoController; 
 use App\Http\Controllers\UsuarioController; 
 use App\Http\Controllers\VentaController;
 
+// Rutas de Autenticación Básica
 Route::get('/', [LoginController::class, 'index'])->name('login.index');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
+// Registro de Usuarios
+Route::get('/register', [LoginController::class, 'registerIndex'])->name('register.index');
+Route::post('/register', [LoginController::class, 'register'])->name('register.post');
+
+// Recuperación de Contraseña
+Route::get('/forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [LoginController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [LoginController::class, 'resetPassword'])->name('password.update');
+
+// Verificación de Correo Electrónico
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->route('login.index')->with('success', '¡Correo verificado con éxito! Ya puedes iniciar sesión.');
+})->middleware(['signed'])->name('verification.verify');
+
+// Cerrar Sesión
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -18,6 +37,7 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
+// Rutas Protegidas por Autenticación
 Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['role:admin'])->group(function () {

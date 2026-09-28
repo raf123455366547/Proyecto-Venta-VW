@@ -63,7 +63,6 @@
                     </li>
                     @endif
 
-                    {{-- Pestaña Ventas (Disponible para Admin, Ventas y Ventas Ayudante) --}}
                     @if(array_intersect(['admin', 'ventas', 'ventas_ayudante', 'ventas ayudante'], $userRoles))
                     <li>
                         <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white">
