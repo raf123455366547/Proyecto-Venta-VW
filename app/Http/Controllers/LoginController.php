@@ -159,7 +159,7 @@ class LoginController extends Controller
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', 'El enlace de recuperación fue guardado en storage/logs/laravel.log.')
+            ? back()->with('status', 'El enlace de recuperación fue guardado')
             : back()->withErrors(['email' => __($status)]);
     }
 

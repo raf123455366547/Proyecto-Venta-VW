@@ -55,14 +55,15 @@
         </div>
 
         <!-- Opción para ir al registro -->
-        <div class="text-center mt-4 pt-2 border-top">
-            <span class="text-muted small">¿Aún no tienes una cuenta?</span>
+        <!-- <div class="text-center mt-4 pt-2 border-top"> -->
+            <!-- <span class="text-muted small">¿Aún no tienes una cuenta?</span>
             <div class="mt-2">
-                <a href="{{ route('register.index') }}" class="btn btn-outline-secondary btn-sm w-100 fw-bold py-2" style="color: #133a60; border-color: #133a60;">
+                <a href="" class="btn btn-outline-secondary btn-sm w-100 fw-bold py-2" style="color: #133a60; border-color: #133a60;">
                     Crear una cuenta nueva
                 </a>
             </div>
-        </div>
+        </div> -->
     </form>
+
 </div>
 @endsection

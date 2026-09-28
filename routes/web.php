@@ -12,9 +12,9 @@ use App\Http\Controllers\VentaController;
 Route::get('/', [LoginController::class, 'index'])->name('login.index');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-// Registro de Usuarios
-Route::get('/register', [LoginController::class, 'registerIndex'])->name('register.index');
-Route::post('/register', [LoginController::class, 'register'])->name('register.post');
+// // Registro de Usuarios
+// Route::get('/register', [LoginController::class, 'registerIndex'])->name('register.index');
+// Route::post('/register', [LoginController::class, 'register'])->name('register.post');
 
 // Recuperación de Contraseña
 Route::get('/forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
@@ -35,7 +35,6 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect()->route('login.index');
 })->name('logout');
-
 
 // Rutas Protegidas por Autenticación
 Route::middleware(['auth'])->group(function () {
