@@ -78,7 +78,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header text-white color_azul">
-                <h5 class="modal-title">Agregar Nuevo Usuario</h5>
+                <h5 class="modal-title ">Agregar Nuevo Usuario</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('usuarios.store') }}" method="POST">

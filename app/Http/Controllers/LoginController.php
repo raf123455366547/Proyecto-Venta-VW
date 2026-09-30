@@ -63,7 +63,7 @@ class LoginController extends Controller
             'password.numbers' => 'La contraseña debe contener al menos un número.',
             'password.symbols' => 'La contraseña debe incluir al menos un carácter especial (@, $, !, %, *, etc.).',
         ]);
-
+    
         // 2. Creación del usuario con verificación automática
         $user = User::create([
             'name' => $request->name,
