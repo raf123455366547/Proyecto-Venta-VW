@@ -34,36 +34,33 @@
         </div>
     @endif
 
-    <form action="{{ route('login.post') }}" method="POST">
-        @csrf
-
-        <div class="mb-3">
-            <label for="correo" class="form-label font-weight-bold">Correo Electrónico</label>
-            <input type="email" name="correo" id="correo" class="form-control" required placeholder="usuario@correo.com" value="{{ old('correo') }}">
+    @auth
+        <div class="alert alert-info" role="status">
+            Sesión iniciada como <strong>{{ Auth::user()->email }}</strong>.
+            Si no aparecen las opciones que necesitas, contacta al administrador.
         </div>
+    @else
+        <form action="{{ route('login.post') }}" method="POST">
+            @csrf
 
-        <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <label for="password" class="form-label font-weight-bold mb-0">Contraseña</label>
-                <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #133a60;">¿Olvidaste tu contraseña?</a>
+            <div class="mb-3">
+                <label for="correo" class="form-label font-weight-bold">Correo Electrónico</label>
+                <input type="email" name="correo" id="correo" class="form-control" required placeholder="usuario@correo.com" value="{{ old('correo') }}">
             </div>
-            <input type="password" name="password" id="password" class="form-control mt-1" required placeholder="••••••••">
-        </div>
 
-        <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn text-white color_azul fw-bold py-2">Ingresar</button>
-        </div>
-
-        <!-- Opción para ir al registro -->
-        <!-- <div class="text-center mt-4 pt-2 border-top"> -->
-            <!-- <span class="text-muted small">¿Aún no tienes una cuenta?</span>
-            <div class="mt-2">
-                <a href="" class="btn btn-outline-secondary btn-sm w-100 fw-bold py-2" style="color: #133a60; border-color: #133a60;">
-                    Crear una cuenta nueva
-                </a>
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label for="password" class="form-label font-weight-bold mb-0">Contraseña</label>
+                    <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #133a60;">¿Olvidaste tu contraseña?</a>
+                </div>
+                <input type="password" name="password" id="password" class="form-control mt-1" required placeholder="••••••••">
             </div>
-        </div> -->
-    </form>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn text-white color_azul fw-bold py-2">Ingresar</button>
+            </div>
+        </form>
+    @endauth
 
 </div>
 @endsection

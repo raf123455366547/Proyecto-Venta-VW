@@ -63,7 +63,7 @@
                     </li>
                     @endif
 
-                    @if(array_intersect(['admin', 'ventas', 'ventas_ayudante', 'ventas ayudante'], $userRoles))
+                    @if(array_intersect(['admin', 'ventas', 'ventas_ayudante', 'ayudante_ventas', 'ventas ayudante'], $userRoles))
                     <li>
                         <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white">
                             Ventas

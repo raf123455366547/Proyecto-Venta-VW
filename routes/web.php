@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/producto/destroy/{id}', [ProductoController::class, 'destroy'])->name('producto.destroy');
     });
 
-    Route::middleware(['role:admin,ventas,ventas_ayudante'])->group(function () {
+    Route::middleware(['role:admin,ventas,ventas_ayudante,ayudante_ventas'])->group(function () {
         Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index');
         Route::post('/ventas/store', [VentaController::class, 'store'])->name('ventas.store');
     });
