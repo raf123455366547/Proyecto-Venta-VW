@@ -34,33 +34,26 @@
         </div>
     @endif
 
-    @auth
-        <div class="alert alert-info" role="status">
-            Sesión iniciada como <strong>{{ Auth::user()->email }}</strong>.
-            Si no aparecen las opciones que necesitas, contacta al administrador.
+    <form action="{{ route('login.post') }}" method="POST">
+        @csrf
+
+        <div class="mb-3">
+            <label for="correo" class="form-label font-weight-bold">Correo Electrónico</label>
+            <input type="email" name="correo" id="correo" class="form-control" required placeholder="usuario@correo.com" value="{{ old('correo') }}">
         </div>
-    @else
-        <form action="{{ route('login.post') }}" method="POST">
-            @csrf
 
-            <div class="mb-3">
-                <label for="correo" class="form-label font-weight-bold">Correo Electrónico</label>
-                <input type="email" name="correo" id="correo" class="form-control" required placeholder="usuario@correo.com" value="{{ old('correo') }}">
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <label for="password" class="form-label font-weight-bold mb-0">Contraseña</label>
+                <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #133a60;">¿Olvidaste tu contraseña?</a>
             </div>
+            <input type="password" name="password" id="password" class="form-control mt-1" required placeholder="••••••••">
+        </div>
 
-            <div class="mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <label for="password" class="form-label font-weight-bold mb-0">Contraseña</label>
-                    <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #133a60;">¿Olvidaste tu contraseña?</a>
-                </div>
-                <input type="password" name="password" id="password" class="form-control mt-1" required placeholder="••••••••">
-            </div>
-
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn text-white color_azul fw-bold py-2">Ingresar</button>
-            </div>
-        </form>
-    @endauth
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn text-white color_azul fw-bold py-2">Ingresar</button>
+        </div>
+    </form>
 
 </div>
 @endsection

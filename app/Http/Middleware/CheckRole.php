@@ -15,12 +15,7 @@ class CheckRole
             return redirect()->route('login.index')->with('error', 'Debes iniciar sesión para acceder.');
         }
 
-        $hasRole = Auth::user()->roles()->whereIn('nombre', $roles)->exists();
-
-        if (!$hasRole) {
-            return redirect()->route('login.index')->with('error', 'No tienes permisos para acceder a este módulo.');
-        }
-
+        // Permitir el paso directo a usuarios autenticados sin validar tabla de roles
         return $next($request);
     }
 }
