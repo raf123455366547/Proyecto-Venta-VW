@@ -26,3 +26,6 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 proyecto_venta_vw_local
+# Ignorar respaldos de base de datos
+database/backups/*
+!database/backups/.gitkeep

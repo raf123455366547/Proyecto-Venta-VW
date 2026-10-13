@@ -34,6 +34,9 @@
         }
     },
     "scripts": {
+        "db:backup": [
+            "bash backup_db.sh"
+        ],
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
