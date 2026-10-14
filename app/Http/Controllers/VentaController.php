@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Venta;
 use App\Models\Producto;
+use App\Models\Venta;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class VentaController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $buscar = $request->get('buscar');
 
+        // Historial de ventas para la vista
         $ventas = Venta::with(['producto', 'usuario'])
             ->when($buscar, function ($query, $buscar) {
                 return $query->whereHas('producto', function ($q) use ($buscar) {
@@ -23,53 +26,104 @@ class VentaController extends Controller
             ->latest()
             ->get();
 
-        $productos = Producto::where('cantidad', '>', 0)->get();
+        // Mapeamos los productos con stock disponible para la pantalla táctil y carrito JS
+        $productosDB = Producto::query()
+            ->where('cantidad', '>', 0)
+            ->orderBy('nombre')
+            ->get()
+            ->map(function (Producto $producto): array {
+                return [
+                    'id' => $producto->id,
+                    'codigo' => '00'.$producto->id,
+                    'nombre' => $producto->nombre,
+                    'precio' => (float) $producto->precio,
+                    'stock' => (int) $producto->cantidad,
+                    'icono' => '📦',
+                ];
+            });
 
-        return view('ventas', compact('ventas', 'productos', 'buscar'));
+        // Retornamos a la vista 'ventas' (resources/views/ventas.blade.php) enviando los productos formateados
+        return view('ventas', compact('ventas', 'productosDB', 'buscar'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'producto_id' => 'required|exists:productos,id',
-            'cantidad' => 'required|integer|min:1',
+        $validated = $request->validate([
+            'items' => ['required_without:producto_id', 'array', 'min:1'],
+            'items.*.producto_id' => ['required_with:items', 'integer', 'exists:productos,id'],
+            'items.*.cantidad' => ['required_with:items', 'integer', 'min:1'],
+            'producto_id' => ['required_without:items', 'integer', 'exists:productos,id'],
+            'cantidad' => ['required_without:items', 'integer', 'min:1'],
         ]);
 
-        return DB::transaction(function () use ($request) {
-            $producto = Producto::findOrFail($request->producto_id);
+        $items = collect($validated['items'] ?? [[
+            'producto_id' => $validated['producto_id'],
+            'cantidad' => $validated['cantidad'],
+        ]])
+            ->groupBy('producto_id')
+            ->map(fn ($productItems, $productId): array => [
+                'producto_id' => (int) $productId,
+                'cantidad' => (int) $productItems->sum('cantidad'),
+            ])
+            ->values();
 
-            if ($producto->cantidad < $request->cantidad) {
-                return redirect()->back()->with('error', 'Stock insuficiente para realizar la venta.');
+        return DB::transaction(function () use ($items): RedirectResponse {
+            $productos = Producto::query()
+                ->whereKey($items->pluck('producto_id'))
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            foreach ($items as $item) {
+                $producto = $productos->get($item['producto_id']);
+
+                if (! $producto) {
+                    return redirect()->route('ventas.index')
+                        ->with('error', 'Uno de los productos ya no está disponible en el inventario.');
+                }
+
+                if ($producto->cantidad < $item['cantidad']) {
+                    return redirect()->route('ventas.index')
+                        ->with('error', "Stock insuficiente para {$producto->nombre}. Disponible: {$producto->cantidad}.");
+                }
             }
 
-            $producto->cantidad -= $request->cantidad;
-            $producto->save();
+            foreach ($items as $item) {
+                $producto = $productos->get($item['producto_id']);
+                $producto->decrement('cantidad', $item['cantidad']);
 
-            Venta::create([
-                'producto_id' => $producto->id,
-                'user_id' => Auth::id(),
-                'cantidad' => $request->cantidad,
-                'precio_unitario' => $producto->precio,
-                'total' => $producto->precio * $request->cantidad,
-            ]);
+                Venta::create([
+                    'producto_id' => $producto->id,
+                    'user_id' => Auth::id(),
+                    'cantidad' => $item['cantidad'],
+                    'precio_unitario' => $producto->precio,
+                    'total' => $producto->precio * $item['cantidad'],
+                ]);
+            }
 
-            return redirect()->back()->with('success', 'Venta registrada con éxito y stock actualizado.');
+            return redirect()->route('ventas.index')
+                ->with('success', 'Venta registrada con éxito y stock actualizado.');
         });
     }
 
-    public function destroy($id)
+    public function destroy(int $id): RedirectResponse
     {
-        return DB::transaction(function () use ($id) {
-            $venta = Venta::findOrFail($id);
+        return DB::transaction(function () use ($id): RedirectResponse {
+            $venta = Venta::query()->lockForUpdate()->findOrFail($id);
+            $producto = Producto::query()
+                ->whereKey($venta->producto_id)
+                ->lockForUpdate()
+                ->first();
 
-            if ($venta->producto) {
-                $venta->producto->cantidad += $venta->cantidad;
-                $venta->producto->save();
+            if ($producto) {
+                $producto->increment('cantidad', $venta->cantidad);
             }
 
             $venta->delete();
 
-            return redirect()->back()->with('success', 'Venta eliminada con éxito y el stock ha sido devuelto.');
+            return redirect()->route('ventas.index')
+                ->with('success', 'Venta eliminada con éxito y el stock ha sido devuelto.');
         });
     }
 }

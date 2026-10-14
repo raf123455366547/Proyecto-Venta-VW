@@ -24,64 +24,69 @@
         body{
             overflow-y: scroll;
             will-change: transform;
+            background-color: #f8f9fa;
+        }
+
+        .btn-ancgvw-style {
+            background-color: #133a60 !important;
+            color: #ffffff !important;
+            border: none !important;
+        }
+
+        .btn-ancgvw-style:hover {
+            background-color: #0d2742 !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
 
 <body>
 
-<header id="principal" class="p-3 text-bg-dark color_azul">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+<!-- NAVBAR GLOBAL: Siempre arriba y abarcando el 100% de la pantalla -->
+<header id="principal" class="p-3 text-bg-dark color_azul shadow-sm mb-3">
+    <div class="container-fluid px-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
 
+            <!-- LOGO -->
             <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none me-4">
                 <img src="{{ asset('assets/logo.ancgvw.png') }}" alt="Logo Inventario" width="40" height="40" class="me-2 object-fit-contain">
                 <span class="fs-4 text-white font-weight-bold">ANCGVW</span>
             </a>
 
-            <ul class="nav col-12 col-lg-auto mx-lg-auto mb-2 justify-content-center mb-md-0">
+            <!-- NAVEGACIÓN -->
+            <ul class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
                 @auth
                     @php
                         $userRoles = Auth::user()->roles->pluck('nombre')->map(fn($r) => trim(strtolower($r)))->toArray();
                     @endphp
 
-                    {{-- Pestaña Productos (Disponible para Admin, Inventario e Inventario Ayudante) --}}
                     @if(array_intersect(['admin', 'inventario', 'inventario_ayudante', 'inventario ayudante'], $userRoles))
                     <li>
-                        <a href="{{ route('productos.index') }}" class="nav-link px-3 text-white">
-                            Productos
-                        </a>
+                        <a href="{{ route('productos.index') }}" class="nav-link px-3 text-white fw-semibold">Productos</a>
                     </li>
                     @endif
 
-                    {{-- Pestaña Inventario (Disponible para Admin, Inventario e Inventario Ayudante) --}}
                     @if(array_intersect(['admin', 'inventario', 'inventario_ayudante', 'inventario ayudante'], $userRoles))
                     <li>
-                        <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white">
-                            Inventario
-                        </a>
+                        <a href="{{ route('inventario.index') }}" class="nav-link px-3 text-white fw-semibold">Inventario</a>
                     </li>
                     @endif
 
                     @if(array_intersect(['admin', 'ventas', 'ventas_ayudante', 'ayudante_ventas', 'ventas ayudante'], $userRoles))
                     <li>
-                        <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white">
-                            Ventas
-                        </a>
+                        <a href="{{ route('ventas.index') }}" class="nav-link px-3 text-white fw-semibold">Ventas</a>
                     </li>
                     @endif
 
-                    {{-- Pestaña Usuarios (Exclusivo para Admin) --}}
                     @if(in_array('admin', $userRoles))
                     <li>
-                        <a href="{{ route('usuarios.index') }}" class="nav-link px-3 text-white">
-                            Usuarios
-                        </a>
+                        <a href="{{ route('usuarios.index') }}" class="nav-link px-3 text-white fw-semibold">Usuarios</a>
                     </li>
                     @endif
                 @endauth
             </ul>
 
+            <!-- BUSCADOR -->
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                 <input
                     type="search"
@@ -91,10 +96,9 @@
                     style="background: #ffffff !important; color: #133a60 !important;">
             </form>
 
+            <!-- ACCIONES -->
             <div class="text-end">
-
                 @auth
-
                     <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#modalPerfil">
                         Mi perfil
                     </button>
@@ -105,17 +109,13 @@
                             Cerrar Sesión
                         </button>
                     </form>
-
                 @else
-
                     @if(!Route::is('login.index'))
                         <a href="{{ route('login.index') }}" class="btn btn-outline-light me-2 text-black color_white text-decoration-none">
                             Iniciar Sesión
                         </a>
                     @endif
-
                 @endauth
-
             </div>
 
         </div>
@@ -123,11 +123,12 @@
 </header>
 
 @auth
+<!-- MODAL PERFIL -->
 <div class="modal fade" id="modalPerfil" tabindex="-1" aria-labelledby="modalPerfilLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header text-white color_azul">
-                <h5 class="modal-title " id="modalPerfilLabel">Mi perfil</h5>
+                <h5 class="modal-title" id="modalPerfilLabel">Mi perfil</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <form action="{{ route('perfil.update') }}" method="POST">
@@ -179,15 +180,17 @@
 </div>
 @endauth
 
-<main>
+<!-- CONTENIDO DE LAS VISTAS -->
+<main class="w-100">
     @if (session('profile_success'))
-        <div class="container mt-3">
+        <div class="container-fluid px-4 mt-2">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('profile_success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
         </div>
     @endif
+    
     @yield('content')
 </main>
 
