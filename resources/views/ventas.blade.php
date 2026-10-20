@@ -21,9 +21,15 @@
         height: 250px;
         overflow-y: auto;
     }
+    .btn-ancgvw-style {
+        background-color: #133a60 !important;
+        color: #ffffff !important;
+        border: none !important;
+    }
 </style>
 
 <div class="container-fluid px-3 my-2">
+    <!-- Alertas del sistema -->
     @if (session('success'))
         <div class="alert alert-success" role="alert">{{ session('success') }}</div>
     @endif
@@ -34,12 +40,15 @@
 
     @if ($errors->any())
         <div class="alert alert-danger" role="alert">
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
+            <ul class="mb-0 ps-3">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
+    <!-- Formulario invisible procesado mediante JavaScript -->
     <form id="checkoutForm" action="{{ route('ventas.store') }}" method="POST" class="d-none">
         @csrf
     </form>
@@ -61,7 +70,7 @@
                     <div class="col-6">
                         <div class="input-group input-group-sm">
                             <span class="input-group-text bg-light border-end-0">🔍</span>
-                            <input type="text" id="searchInput" class="form-control bg-light border-start-0" placeholder="Producto" onkeydown="if(event.key==='Enter') buscarProducto()">
+                            <input type="text" id="searchInput" class="form-control bg-light border-start-0" placeholder="Producto (Enter)..." onkeydown="if(event.key==='Enter') buscarProducto()">
                         </div>
                     </div>
                 </div>
@@ -91,7 +100,7 @@
                     </div>
                 </div>
 
-                <!-- Botones Rápidos de Acción -->
+                <!-- Botones Rápidos -->
                 <div class="row g-2 mb-2">
                     <div class="col-6">
                         <button class="btn btn-ancgvw-style btn-sm w-100 fw-semibold py-1" onclick="alert('Cotización generada')"> Cotización</button>
@@ -101,7 +110,7 @@
                     </div>
                 </div>
 
-                <!-- Tabla del Carrito de Compras Dinámica -->
+                <!-- Tabla del Carrito -->
                 <div class="cart-table-container border rounded-3 mb-2 bg-white">
                     <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.85rem;">
                         <thead class="table-light sticky-top">
@@ -114,12 +123,12 @@
                             </tr>
                         </thead>
                         <tbody id="cartTableBody">
-                            <!-- Los productos se inyectan dinámicamente desde JS -->
+                            <!-- Inyectado por JS -->
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Totales y Botones Táctiles de Cobro -->
+                <!-- Totales y Pago -->
                 <div class="border-top pt-2">
                     <div class="d-flex justify-content-between text-muted mb-1" style="font-size: 0.8rem;">
                         <span>Subtotal:</span>
@@ -134,14 +143,21 @@
                         <span class="fs-2 fw-bolder" style="color: #133a60;" id="totalDisplay">$0.00</span>
                     </div>
 
-                    <div class="row g-2">
-                        <div class="col-2">
-                        </div>
-                        <div class="col-4">
+                    <div class="row g-">
+            
+                        <div class="col-6">
                             <button class="btn btn-danger w-100 py-2 fw-bold" onclick="vaciarCarrito()"> CANCELAR</button>
                         </div>
-                        <div class="col-4">
-                            <button class="btn btn-success w-100 py-2 fw-bold" id="btnPagar" onclick="procesarPago()" disabled> PAGAR</button>
+                         <div class="col-6">
+                           <button
+                            type="button"
+                            class="btn btn-success w-100 py-2 fw-bold"
+                            id="btnPagar"
+                            onclick="procesarPago()"
+                            disabled
+                                >
+                                PAGAR Y DESCARGAR PDF
+                        </button>
                         </div>
                     </div>
                 </div>
@@ -149,38 +165,16 @@
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: Cuadrícula Táctil de Productos y Teclado POS -->
+        <!-- COLUMNA DERECHA: Productos -->
         <div class="col-lg-7 col-md-12">
             <div class="card pos-card border-0 p-3 bg-light">
-                
-                <!-- Categorías -->
                 <div class="d-flex gap-2 overflow-auto pb-2 mb-2">
                     <button class="btn btn-ancgvw-style fw-bold px-3 btn-sm" onclick="filtrarCategoria('todas')">Todos los productos</button>
                 </div>
 
-                <!-- Cuadrícula de Productos Rápidos -->
                 <div class="row g-2 mb-3" id="productosGrid">
-                    <!-- Productos inyectados desde JS -->
+                    <!-- Tarjetas de producto inyectadas por JS -->
                 </div>
-
-                <!-- Botones Operativos de Caja -->
-                <!-- <div class="row g-2">
-                    <!-- <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Cliente</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Ventas Recientes</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Pendientes</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Pedidos</button></div>
-
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Entrada / Salida</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Buscar Stock</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Marcar Ent./Sal.</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Imprimir Ticket</button></div>
-
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;" onclick="vaciarCarrito()"> Nueva Venta</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Guardar Venta</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Descuento %</button></div>
-                    <div class="col-6 col-md-3"><button class="btn btn-ancgvw-style w-100 py-2 fw-semibold shadow-sm text-nowrap" style="font-size: 0.8rem;"> Facturar CFDI</button></div> -->
-                <!-- </div> -->
-
             </div>
         </div>
 
@@ -189,11 +183,11 @@
 
 <script>
     const productosData = {{ Illuminate\Support\Js::from($productosDB) }};
+    const logoVentas = @json(asset('assets/ventas.png'));
 
     let cart = [];
     let categoriaActual = 'todas';
 
-    // Renderizar Productos en la Grid
     function renderProductos() {
         const grid = document.getElementById('productosGrid');
         grid.innerHTML = '';
@@ -207,16 +201,27 @@
             col.className = 'col-4 col-md-2';
             const card = document.createElement('button');
             card.type = 'button';
-            card.className = 'card bg-white btn-pos-item text-center p-2 rounded-3 h-100 w-100';
+            card.className = 'card bg-white btn-pos-item text-center p-2 rounded-3 h-100 w-100 d-flex flex-column align-items-center justify-content-between';
             card.disabled = prod.stock < 1;
             card.addEventListener('click', () => agregarAlCarrito(prod.id));
 
-            const icon = document.createElement('div');
-            icon.className = 'fs-4';
-            icon.textContent = prod.icono;
+            let icon;
+            const usaLogoVentas = !prod.icono || prod.icono === '📦';
+            if (usaLogoVentas || (prod.icono && (prod.icono.includes('/') || prod.icono.includes('.')))) {
+                icon = document.createElement('img');
+                icon.src = usaLogoVentas ? logoVentas : prod.icono;
+                icon.alt = usaLogoVentas ? 'Logo ANCGVW' : prod.nombre;
+                icon.className = 'img-fluid mb-1 align-self-center';
+                icon.style.maxHeight = '35px';
+                icon.style.objectFit = 'contain';
+            } else {
+                icon = document.createElement('div');
+                icon.className = 'fs-4';
+                icon.textContent = prod.icono;
+            }
 
             const name = document.createElement('div');
-            name.className = 'fw-bold text-truncate';
+            name.className = 'fw-bold text-truncate w-100';
             name.style.fontSize = '0.75rem';
             name.textContent = prod.nombre;
 
@@ -234,7 +239,6 @@
         });
     }
 
-    // Agregar Producto al Carrito
     function agregarAlCarrito(id) {
         const producto = productosData.find(p => p.id === id);
         if (!producto) return;
@@ -245,7 +249,6 @@
                 alert('No hay más unidades disponibles de este producto.');
                 return;
             }
-
             existe.cantidad++;
         } else {
             cart.push({ ...producto, cantidad: 1 });
@@ -253,7 +256,6 @@
         renderCarrito();
     }
 
-    // Cambiar Cantidad de un Ítem
     function cambiarCantidad(index, delta) {
         if (delta > 0 && cart[index].cantidad >= cart[index].stock) {
             alert('No hay más unidades disponibles de este producto.');
@@ -267,25 +269,21 @@
         renderCarrito();
     }
 
-    // Eliminar Ítem del Carrito
     function eliminarItem(index) {
         cart.splice(index, 1);
         renderCarrito();
     }
 
-    // Vaciar Carrito Completo
     function vaciarCarrito() {
         cart = [];
         renderCarrito();
     }
 
-    // Filtrar por Categoria
     function filtrarCategoria(cat) {
         categoriaActual = cat;
         renderProductos();
     }
 
-    // Buscar por Teclado o Código de Barras
     function buscarProducto() {
         const input = document.getElementById('searchInput');
         const query = input.value.trim().toLowerCase();
@@ -300,7 +298,6 @@
         }
     }
 
-    // Renderizar la Tabla del Carrito y Totales
     function renderCarrito() {
         const tbody = document.getElementById('cartTableBody');
         tbody.innerHTML = '';
@@ -364,7 +361,7 @@
             const remove = document.createElement('button');
             remove.type = 'button';
             remove.className = 'btn btn-sm btn-link text-danger p-0 border-0';
-            remove.textContent = '❌';
+            remove.textContent = 'X';
             remove.setAttribute('aria-label', `Eliminar ${item.nombre}`);
             remove.addEventListener('click', () => eliminarItem(index));
 
@@ -385,7 +382,6 @@
         document.getElementById('btnPagar').disabled = false;
     }
 
-    // Procesar Venta / Pago
     function procesarPago() {
         if (cart.length === 0) return;
 
@@ -410,12 +406,10 @@
         form.submit();
     }
 
-    // Inicializar al cargar la vista
     document.addEventListener('DOMContentLoaded', () => {
         renderProductos();
         renderCarrito();
 
-        // Actualizar nombre del cliente en tiempo real
         document.getElementById('clienteInput').addEventListener('input', (e) => {
             document.getElementById('clienteNombreDisplay').innerText = e.target.value.trim() || 'Cliente General';
         });
